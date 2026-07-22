@@ -5,8 +5,8 @@ import numpy as np
 import os
 
 # Load your trained model and vectorizer
-model = pickle.load(open("backend/model.pkl", "rb"))
-vectorizer = pickle.load(open("backend/vectorizer.pkl", "rb"))
+model = pickle.load(open("model.pkl", "rb"))
+vectorizer = pickle.load(open("vectorizer.pkl", "rb"))
 
 app = Flask(__name__)
 CORS(app)  # allow React frontend to connect
