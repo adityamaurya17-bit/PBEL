@@ -3,40 +3,31 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report
+import pickle
 
 # Load datasets
 fake = pd.read_csv("src/data/Fake.csv")
 true = pd.read_csv("src/data/True.csv")
 
-# Add labels
 fake['label'] = 0
 true['label'] = 1
 
-# Combine
-data = pd.concat([fake, true], axis=0)
-data = data[['text', 'label']]
+data = pd.concat([fake, true], axis=0)[['text', 'label']]
 
-# Split data
 X = data['text']
 y = data['label']
 
-# Convert text to numerical features
 vectorizer = TfidfVectorizer(stop_words='english', max_df=0.7)
 X_vec = vectorizer.fit_transform(X)
 
-# Train-test split
 X_train, X_test, y_train, y_test = train_test_split(X_vec, y, test_size=0.2, random_state=42)
 
-# Train model
 model = LogisticRegression()
 model.fit(X_train, y_train)
 
-# Evaluate
-y_pred = model.predict(X_test)
-print("Accuracy:", accuracy_score(y_test, y_pred))
-print(classification_report(y_test, y_pred))
+print("Accuracy:", accuracy_score(y_test, model.predict(X_test)))
+print(classification_report(y_test, model.predict(X_test)))
 
-# Example prediction
-sample = ["Breaking news: Scientists discover water on Mars!"]
-sample_vec = vectorizer.transform(sample)
-print("Prediction:", model.predict(sample_vec))
+# Save model + vectorizer into backend folder
+pickle.dump(model, open("backend/model.pkl", "wb"))
+pickle.dump(vectorizer, open("backend/vectorizer.pkl", "wb"))
