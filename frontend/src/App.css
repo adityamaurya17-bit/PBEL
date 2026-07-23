@@ -1,38 +1,97 @@
-.App {
+.app-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.app-header {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 24px;
+  font-weight: bold;
+  background: #007bff;
   color: white;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.input-box {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 15px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-primary {
+  flex: 1;
+  padding: 10px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.btn-secondary {
+  flex: 1;
+  padding: 10px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.result-card {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.result-card.real {
+  background: #d4edda;
+}
+
+.result-card.fake {
+  background: #f5c6cb;
+}
+
+.result-card.error {
+  background: #f8d7da;
+}
+
+.confidence-bar {
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.confidence-bar div {
+  height: 100%;
+  background: #007bff;
+  border-radius: 5px;
+}
+
+.history-section {
+  margin-top: 30px;
+}
+
+.app-footer {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
+  color: #555;
 }

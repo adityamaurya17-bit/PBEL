@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./App.css"; // external CSS file
 
 function App() {
   const [text, setText] = useState("");
@@ -19,7 +20,7 @@ function App() {
       console.log("Backend response:", data);
 
       setResult(data);
-      setHistory([{ input: text, ...data }, ...history]); // save prediction to history
+      setHistory([{ input: text, ...data }, ...history]);
     } catch (error) {
       console.error("Error:", error);
       setResult({ error: "Server not reachable" });
@@ -34,63 +35,46 @@ function App() {
   };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", fontFamily: "Arial" }}>
-      <h1 style={{ textAlign: "center", color: "#333" }}>📰 Fake News Detection</h1>
+    <div className="app-container">
+      <header className="app-header">📰 Fake News Detection</header>
 
       <textarea
+        className="input-box"
         rows="4"
-        cols="50"
         placeholder="Enter news text here..."
         value={text}
         onChange={(e) => setText(e.target.value)}
-        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
       />
-      <div style={{ display: "flex", gap: "10px" }}>
-        <button
-          onClick={handlePredict}
-          disabled={loading}
-          style={{ flex: 1, padding: "10px", background: "#007bff", color: "white", border: "none", cursor: "pointer" }}
-        >
+
+      <div className="button-group">
+        <button onClick={handlePredict} disabled={loading} className="btn-primary">
           {loading ? "Checking..." : "Check News"}
         </button>
-        <button
-          onClick={handleClear}
-          style={{ flex: 1, padding: "10px", background: "#6c757d", color: "white", border: "none", cursor: "pointer" }}
-        >
-          Clear
-        </button>
+        <button onClick={handleClear} className="btn-secondary">Clear</button>
       </div>
 
       {result && (
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "15px",
-            borderRadius: "8px",
-            background: result.error
-              ? "#f8d7da"
-              : result.prediction === "Fake News"
-              ? "#f5c6cb"
-              : "#d4edda",
-          }}
-        >
+        <div className={`result-card ${result.error ? "error" : result.prediction === "Fake News" ? "fake" : "real"}`}>
           {result.error ? (
-            <p style={{ color: "red" }}>{result.error}</p>
+            <p>{result.error}</p>
           ) : (
             <>
               <p><strong>Prediction:</strong> {result.prediction}</p>
               <p><strong>Confidence:</strong> {result.confidence}%</p>
+              <div className="confidence-bar">
+                <div style={{ width: `${result.confidence}%` }}></div>
+              </div>
             </>
           )}
         </div>
       )}
 
       {history.length > 0 && (
-        <div style={{ marginTop: "30px" }}>
+        <div className="history-section">
           <h2>📜 History</h2>
           <ul>
             {history.map((item, index) => (
-              <li key={index} style={{ marginBottom: "10px" }}>
+              <li key={index}>
                 <strong>Input:</strong> {item.input} <br />
                 <strong>Prediction:</strong> {item.prediction} <br />
                 <strong>Confidence:</strong> {item.confidence}%
@@ -99,6 +83,8 @@ function App() {
           </ul>
         </div>
       )}
+
+      <footer className="app-footer">Made by Aditya Maurya | CSE-DS Project</footer>
     </div>
   );
 }
