@@ -1,97 +1,397 @@
+:root {
+  --bg: #0a0b0f;
+  --surface: #14161d;
+  --surface-2: #1b1e28;
+  --border: #262a37;
+  --border-light: #323747;
+  --text: #e8e9ed;
+  --text-dim: #9198ac;
+  --text-faint: #6b7280;
+  --accent: #7c6cff;
+  --accent-2: #22d3ee;
+  --supported: #34d399;
+  --supported-bg: rgba(52, 211, 153, 0.12);
+  --refuted: #f87171;
+  --refuted-bg: rgba(248, 113, 113, 0.12);
+  --uncertain: #fbbf24;
+  --uncertain-bg: rgba(251, 191, 36, 0.12);
+  --radius: 14px;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+.glow {
+  position: absolute;
+  top: -180px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 500px;
+  background: radial-gradient(closest-side, rgba(124, 108, 255, 0.25), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 .app-container {
-  max-width: 700px;
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: "Segoe UI", Arial, sans-serif;
+  padding: 56px 20px 40px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .app-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  background: #007bff;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.app-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #fff 0%, #a5a8ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.app-subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+  max-width: 420px;
+}
+
+.knowledge-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--uncertain);
+  background: var(--uncertain-bg);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+}
+
+.knowledge-notice::before {
+  content: "⚠";
+  font-size: 13px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
   margin-bottom: 20px;
 }
 
 .input-box {
   width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-bottom: 15px;
+  resize: vertical;
+  min-height: 90px;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+  line-height: 1.5;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input-box::placeholder {
+  color: var(--text-faint);
+}
+
+.input-box:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124, 108, 255, 0.2);
 }
 
 .button-group {
   display: flex;
   gap: 10px;
+  margin-top: 14px;
+}
+
+.btn-primary,
+.btn-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.15s ease, background 0.15s ease;
 }
 
 .btn-primary {
   flex: 1;
-  padding: 10px;
-  background: #007bff;
+  background: linear-gradient(135deg, var(--accent), #5a4bff);
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
 }
 
-.btn-primary:hover {
-  background: #0056b3;
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn-secondary {
-  flex: 1;
-  padding: 10px;
-  background: #6c757d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  background: var(--surface-2);
+  color: var(--text-dim);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--text-faint);
+}
+
+.spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .result-card {
-  margin-top: 20px;
-  padding: 15px;
-  border-radius: 8px;
-  color: #333;
+  border-left: 3px solid var(--border-light);
 }
 
-.result-card.real {
-  background: #d4edda;
+.result-card.supported {
+  border-left-color: var(--supported);
 }
 
-.result-card.fake {
-  background: #f5c6cb;
+.result-card.refuted {
+  border-left-color: var(--refuted);
+}
+
+.result-card.uncertain {
+  border-left-color: var(--uncertain);
 }
 
 .result-card.error {
-  background: #f8d7da;
+  border-left-color: var(--refuted);
+  color: var(--refuted);
+}
+
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.verdict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.verdict-badge.small {
+  font-size: 11px;
+  padding: 3px 9px;
+}
+
+.verdict-icon {
+  font-size: 11px;
+}
+
+.verdict-badge.supported {
+  background: var(--supported-bg);
+  color: var(--supported);
+}
+
+.verdict-badge.refuted {
+  background: var(--refuted-bg);
+  color: var(--refuted);
+}
+
+.verdict-badge.uncertain {
+  background: var(--uncertain-bg);
+  color: var(--uncertain);
+}
+
+.confidence-value {
+  font-size: 13px;
+  color: var(--text-dim);
 }
 
 .confidence-bar {
-  height: 10px;
-  background: #eee;
-  border-radius: 5px;
-  margin-top: 10px;
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
 }
 
-.confidence-bar div {
+.confidence-fill {
   height: 100%;
-  background: #007bff;
-  border-radius: 5px;
+  border-radius: 999px;
+  transition: width 0.4s ease;
 }
 
-.history-section {
-  margin-top: 30px;
+.confidence-fill.supported {
+  background: var(--supported);
+}
+
+.confidence-fill.refuted {
+  background: var(--refuted);
+}
+
+.confidence-fill.uncertain {
+  background: var(--uncertain);
+}
+
+.cited-sentence {
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.evidence-list {
+  margin-top: 16px;
+}
+
+.evidence-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+
+.evidence-list ul {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.evidence-item {
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.evidence-sentence {
+  color: var(--text-dim);
+  display: block;
+}
+
+.evidence-source {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+.evidence-source:hover {
+  text-decoration: underline;
+}
+
+.history-section h2 {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin: 0 0 14px;
+}
+
+.history-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.history-item {
+  padding: 10px 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.history-input {
+  font-size: 13.5px;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.history-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.history-confidence {
+  font-size: 12px;
+  color: var(--text-faint);
 }
 
 .app-footer {
   text-align: center;
-  margin-top: 40px;
-  font-size: 14px;
-  color: #555;
+  margin-top: 32px;
+  font-size: 12.5px;
+  color: var(--text-faint);
 }

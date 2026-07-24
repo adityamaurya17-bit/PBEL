@@ -1,5 +1,19 @@
 import React, { useState } from "react";
-import "./App.css"; // external CSS file
+import "./App.css";
+
+const API_URL = process.env.REACT_APP_API_URL || "https://pbel2.akashprojects.dev";
+
+function verdictClass(verdict) {
+  if (verdict === "SUPPORTED") return "supported";
+  if (verdict === "REFUTED") return "refuted";
+  return "uncertain";
+}
+
+function verdictIcon(verdict) {
+  if (verdict === "SUPPORTED") return "✓";
+  if (verdict === "REFUTED") return "✕";
+  return "?";
+}
 
 function App() {
   const [text, setText] = useState("");
@@ -7,10 +21,10 @@ function App() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const handlePredict = async () => {
+  const handleVerify = async () => {
     setLoading(true);
     try {
-      const response = await fetch("https://pbel.onrender.com/predict", {
+      const response = await fetch(`${API_URL}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text }),
@@ -35,56 +49,123 @@ function App() {
   };
 
   return (
-    <div className="app-container">
-      <header className="app-header">📰 Fake News Detection</header>
+    <div className="app-shell">
+      <div className="glow" aria-hidden="true" />
 
-      <textarea
-        className="input-box"
-        rows="4"
-        placeholder="Enter news text here..."
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+      <div className="app-container">
+        <header className="app-header">
+          <span className="app-title">News Fact Checker</span>
+          <span className="app-subtitle">
+            Retrieval + NLI fact-checking against a local Wikipedia index
+          </span>
+        </header>
 
-      <div className="button-group">
-        <button onClick={handlePredict} disabled={loading} className="btn-primary">
-          {loading ? "Checking..." : "Check News"}
-        </button>
-        <button onClick={handleClear} className="btn-secondary">Clear</button>
+        <div className="knowledge-notice">
+          Knowledge base is a static Wikipedia snapshot from June 2017 — claims
+          about events after that date can't be verified.
+        </div>
+
+        <div className="panel input-panel">
+          <textarea
+            className="input-box"
+            rows="4"
+            placeholder="Enter a claim to verify against Wikipedia..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+
+          <div className="button-group">
+            <button
+              onClick={handleVerify}
+              disabled={loading || !text.trim()}
+              className="btn-primary"
+            >
+              {loading && <span className="spinner" aria-hidden="true" />}
+              {loading ? "Verifying..." : "Verify Claim"}
+            </button>
+            <button onClick={handleClear} className="btn-secondary">
+              Clear
+            </button>
+          </div>
+        </div>
+
+        {result && (
+          <div
+            className={`panel result-card ${
+              result.error ? "error" : verdictClass(result.verdict)
+            }`}
+          >
+            {result.error ? (
+              <p>{result.error}</p>
+            ) : (
+              <>
+                <div className="result-head">
+                  <span className={`verdict-badge ${verdictClass(result.verdict)}`}>
+                    <span className="verdict-icon">{verdictIcon(result.verdict)}</span>
+                    {result.verdict}
+                  </span>
+                  <span className="confidence-value">{result.confidence}% confidence</span>
+                </div>
+                <div className="confidence-bar">
+                  <div
+                    className={`confidence-fill ${verdictClass(result.verdict)}`}
+                    style={{ width: `${result.confidence}%` }}
+                  />
+                </div>
+                {result.cited_sentence && (
+                  <blockquote className="cited-sentence">
+                    "{result.cited_sentence}"
+                  </blockquote>
+                )}
+                {result.evidence && result.evidence.length > 0 && (
+                  <div className="evidence-list">
+                    <span className="evidence-label">Evidence</span>
+                    <ul>
+                      {result.evidence.map((e, i) => (
+                        <li key={i} className="evidence-item">
+                          <span className="evidence-sentence">{e.sentence}</span>
+                          <a
+                            className="evidence-source"
+                            href={e.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {e.source_title} ↗
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {history.length > 0 && (
+          <div className="panel history-section">
+            <h2>History</h2>
+            <ul>
+              {history.map((item, index) => (
+                <li key={index} className="history-item">
+                  <div className="history-input">{item.input}</div>
+                  <div className="history-meta">
+                    <span className={`verdict-badge small ${verdictClass(item.verdict)}`}>
+                      <span className="verdict-icon">{verdictIcon(item.verdict)}</span>
+                      {item.verdict || "Error"}
+                    </span>
+                    {item.confidence != null && (
+                      <span className="history-confidence">{item.confidence}%</span>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <footer className="app-footer">Made by Aditya Maurya | IBM-PBEL Virtual Internship Project</footer>
       </div>
-
-      {result && (
-        <div className={`result-card ${result.error ? "error" : result.prediction === "Fake News" ? "fake" : "real"}`}>
-          {result.error ? (
-            <p>{result.error}</p>
-          ) : (
-            <>
-              <p><strong>Prediction:</strong> {result.prediction}</p>
-              <p><strong>Confidence:</strong> {result.confidence}%</p>
-              <div className="confidence-bar">
-                <div style={{ width: `${result.confidence}%` }}></div>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {history.length > 0 && (
-        <div className="history-section">
-          <h2>📜 History</h2>
-          <ul>
-            {history.map((item, index) => (
-              <li key={index}>
-                <strong>Input:</strong> {item.input} <br />
-                <strong>Prediction:</strong> {item.prediction} <br />
-                <strong>Confidence:</strong> {item.confidence}%
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <footer className="app-footer">Made by Aditya Maurya | CSE-DS Project</footer>
     </div>
   );
 }
